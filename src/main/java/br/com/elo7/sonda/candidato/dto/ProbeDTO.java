@@ -5,7 +5,15 @@ public class ProbeDTO {
 	private int y;
 	private char direction;
 	private String commands;
+	private PlanetDTO planet;
+	
 
+	public PlanetDTO getPlanet() {
+		return planet;
+	}
+	public void setPlanet(PlanetDTO planet) {
+		this.planet = planet;
+	}
 	public int getX() {
 		return x;
 	}

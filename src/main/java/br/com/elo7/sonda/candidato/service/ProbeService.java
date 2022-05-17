@@ -7,31 +7,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.annotations.VisibleForTesting;
-import br.com.elo7.sonda.candidato.dto.InputDTO;
+
+import br.com.elo7.sonda.candidato.controller.request.InputRequest;
+import br.com.elo7.sonda.candidato.dto.PlanetDTO;
 import br.com.elo7.sonda.candidato.dto.ProbeDTO;
 import br.com.elo7.sonda.candidato.model.Command;
 import br.com.elo7.sonda.candidato.model.Direction;
 import br.com.elo7.sonda.candidato.model.Planet;
 import br.com.elo7.sonda.candidato.model.Probe;
-import br.com.elo7.sonda.candidato.persistence.Planets;
-import br.com.elo7.sonda.candidato.persistence.Probes;
+import br.com.elo7.sonda.candidato.repository.PlanetsRepository;
+import br.com.elo7.sonda.candidato.repository.ProbesRepository;
 
 @Service
 public class ProbeService {
-	@Autowired
-	private Planets planets;
-	@Autowired
-	private Probes probes;
 	
-	public List<Probe> landProbes(InputDTO input) {
-		Planet planet = concertPlanet(input);
-		planets.save(planet);
+	@Autowired
+	private PlanetService planetService;
+	
+	@Autowired
+	private ProbesRepository probes;
+	
+	public List<Probe> landProbes(InputRequest input) {		
 		
-		List<Probe> convertedProbes = convertAndMoveProbes(input, planet);
-		convertedProbes.forEach(probe -> probes.save(probe));
+		PlanetDTO planetDTO = planetService.savePlanetProcess(input);		
+		
+		List<Probe> convertedProbes = saveProbeProcess(input, planetDTO);
 		
 		return convertedProbes;
 	}
+
+	private List<Probe> saveProbeProcess(InputRequest input, PlanetDTO planet) {
+		List<Probe> convertedProbes = convertAndMoveProbes(input,planet);
+		convertedProbes.forEach(probe -> probes.save(probe));
+		return convertedProbes;
+	}
+
+	
 	
 	@VisibleForTesting
 	void applyCommandToProbe(Probe probe, char command) {
@@ -109,10 +120,11 @@ public class ProbeService {
 		
 	}
 	
-	private List<Probe> convertAndMoveProbes(InputDTO input, Planet planet) {
+	private List<Probe> convertAndMoveProbes(InputRequest input,PlanetDTO planet) {
 		return input.getProbes()
 						.stream().map(probeDto -> {
-							Probe probe = convertProbe(probeDto, planet);
+							probeDto.setPlanet(planet);
+							Probe probe = Probe.buildEntityFromDTO(probeDto);
 							moveProbeWithAllCommands(probe, probeDto);
 							return probe;
 						}).collect(Collectors.toList());
@@ -124,19 +136,7 @@ public class ProbeService {
 		}
 	}
 	
-	private Probe convertProbe(ProbeDTO probeDto, Planet planet) {
-		Probe probe = new Probe();
-		probe.setPlanet(planet);
-		probe.setX(probeDto.getX());
-		probe.setY(probeDto.getY());
-		probe.setDirection(probeDto.getDirection());
-		return probe;
-	}
 	
-	private Planet concertPlanet(InputDTO input) {
-		Planet planet = new Planet();
-		planet.setHeight(input.getHeight());
-		planet.setWidth(input.getWidth());
-		return planet;
-	}
+	
+	
 }
