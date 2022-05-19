@@ -3,31 +3,31 @@ package br.com.elo7.sonda.candidato.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.elo7.sonda.candidato.controller.request.InputRequest;
 import br.com.elo7.sonda.candidato.dto.PlanetDTO;
-import br.com.elo7.sonda.candidato.model.Planet;
-import br.com.elo7.sonda.candidato.repository.PlanetsRepository;
+import br.com.elo7.sonda.candidato.port.outbound.PersistencePortOutbound;
 
 @Service
 public class PlanetService {
 	
 	@Autowired
-	private PlanetsRepository planets;
+	private PersistencePortOutbound persistenceOutb;
 	
-	public PlanetDTO savePlanetProcess(InputRequest input) {
-		Planet planet = concertPlanet(input);
-		planets.save(planet);
+	public PlanetDTO savePlanet(PlanetDTO inputDTO) {
 		
-		PlanetDTO planetRet = PlanetDTO.buildDTOFromEntity(planet);
+		PlanetDTO planetDB = persistenceOutb.savePlanet(inputDTO);
+		return planetDB;
 		
-		return planetRet;
 	}
 	
-	private Planet concertPlanet(InputRequest input) {
-		Planet planet = new Planet();
-		planet.setHeight(input.getHeight());
-		planet.setWidth(input.getWidth());
-		return planet;
+	public PlanetDTO getPlanetByPlanetDTO(PlanetDTO planet) {
+				
+		PlanetDTO planetDB = persistenceOutb.getPlanetByPlanetDTO(planet);
+		
+		if(planetDB!=null) {
+			return planetDB;
+		}
+		
+		return null;
 	}
 
 }

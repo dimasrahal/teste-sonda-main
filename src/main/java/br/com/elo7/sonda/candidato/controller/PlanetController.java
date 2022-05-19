@@ -19,6 +19,7 @@ public class PlanetController {
 
 	@PostMapping
     public ResponseEntity<PlanetDTO> register(@RequestBody InputRequest inputDto) {
-		return ResponseEntity.ok(planetService.savePlanetProcess(inputDto));        
+		PlanetDTO planet = new PlanetDTO(inputDto.getWidth(),inputDto.getHeight());		
+		return ResponseEntity.ok(planetService.savePlanet(planet));        
     }
 }

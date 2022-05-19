@@ -8,6 +8,15 @@ public class PlanetDTO {
 	private int width;
 	private int height;
 	
+	
+	public PlanetDTO() {
+		super();
+	}
+	public PlanetDTO(int width, int height) {
+		super();
+		this.width = width;
+		this.height = height;
+	}
 	public long getId() {
 		return id;
 	}

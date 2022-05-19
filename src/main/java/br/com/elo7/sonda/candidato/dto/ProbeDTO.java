@@ -1,6 +1,8 @@
 package br.com.elo7.sonda.candidato.dto;
 
 public class ProbeDTO {
+	
+	private long id;
 	private int x; 
 	private int y;
 	private char direction;
@@ -38,4 +40,11 @@ public class ProbeDTO {
 	public void setCommands(String commands) {
 		this.commands = commands;
 	}
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	
 }

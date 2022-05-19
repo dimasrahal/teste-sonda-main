@@ -61,6 +61,15 @@ public class Planet {
 		entity.setHeight(dto.getHeight());
 		entity.setWidth(dto.getWidth());
 		
-		return entity;		
+		return entity;
+	}
+	
+	public PlanetDTO buildDTOFromEntity() {
+		PlanetDTO dto = new PlanetDTO();
+		dto.setHeight(this.height);
+		dto.setWidth(this.width);
+		dto.setId(this.id);		
+		
+		return dto;		
 	}
 }

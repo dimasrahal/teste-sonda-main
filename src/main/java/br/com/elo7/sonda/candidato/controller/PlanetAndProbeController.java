@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.elo7.sonda.candidato.controller.request.InputRequest;
+import br.com.elo7.sonda.candidato.dto.PlanetDTO;
+import br.com.elo7.sonda.candidato.dto.ProbeDTO;
 import br.com.elo7.sonda.candidato.model.Probe;
 import br.com.elo7.sonda.candidato.service.ProbeService;
 
@@ -20,7 +22,10 @@ public class PlanetAndProbeController {
 	private ProbeService probeService;
 
 	@PostMapping
-    public ResponseEntity<List<Probe>> register(@RequestBody InputRequest inputDto) {
-		return ResponseEntity.ok(probeService.landProbes(inputDto));        
+    public ResponseEntity<List<ProbeDTO>> register(@RequestBody InputRequest inputDto) {
+		
+		PlanetDTO planet = new PlanetDTO(inputDto.getWidth(),inputDto.getHeight());
+		
+		return ResponseEntity.ok(probeService.landProbes(planet,inputDto.getProbes()));        
     }
 }
